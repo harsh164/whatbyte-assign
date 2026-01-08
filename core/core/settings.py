@@ -1,27 +1,23 @@
 from pathlib import Path
 from dotenv import load_dotenv
 import os
-from datetime import timedelta
 import dj_database_url
 
-# --------------------------------------------------
-# Base setup
-# --------------------------------------------------
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv("SECRET_KEY", "unsafe-secret-key")
+SECRET_KEY = os.getenv("SECRET_KEY", "unsafe-secret")
+
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-# --------------------------------------------------
+# -----------------------------
 # Applications
-# --------------------------------------------------
+# -----------------------------
 INSTALLED_APPS = [
     "jazzmin",  # MUST be first
-
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -38,27 +34,18 @@ INSTALLED_APPS = [
 
 AUTH_USER_MODEL = "accounts.User"
 
-# --------------------------------------------------
-# Database (Render PostgreSQL)
-# --------------------------------------------------
+# -----------------------------
+# Database
+# -----------------------------
 DATABASES = {
     "default": dj_database_url.config(
         default=os.getenv("DATABASE_URL")
     )
 }
 
-# --------------------------------------------------
-# Django REST Framework + JWT
-# --------------------------------------------------
-REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-    ),
-}
-
-# --------------------------------------------------
+# -----------------------------
 # Middleware
-# --------------------------------------------------
+# -----------------------------
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -68,11 +55,11 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
 ]
 
-# --------------------------------------------------
-# URLs & Templates
-# --------------------------------------------------
 ROOT_URLCONF = "core.urls"
 
+# -----------------------------
+# Templates
+# -----------------------------
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -90,62 +77,60 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "core.wsgi.application"
 
-# --------------------------------------------------
+# -----------------------------
+# Static Files (CRITICAL)
+# -----------------------------
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# -----------------------------
 # Internationalization
-# --------------------------------------------------
+# -----------------------------
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-# --------------------------------------------------
-# Static files (THIS IS THE KEY FIX)
-# --------------------------------------------------
-STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# --------------------------------------------------
-# JAZZMIN CONFIG (UI / UX)
-# --------------------------------------------------
+# -----------------------------
+# Django REST
+# -----------------------------
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+}
+
+# -----------------------------
+# JAZZMIN CONFIG (THIS IS THE UI)
+# -----------------------------
 JAZZMIN_SETTINGS = {
-    # Branding
     "site_title": "Healthcare Admin",
     "site_header": "Healthcare Management System",
     "site_brand": "WhatByte",
-    "site_logo_classes": "img-circle",
     "welcome_sign": "Welcome back 👋",
 
-    # Layout
     "navigation_expanded": True,
-    "show_sidebar": True,
 
-    # Hide default auth clutter
     "hide_apps": ["auth"],
     "hide_models": ["auth.Group"],
 
-    # Top Menu
     "topmenu_links": [
         {"name": "Dashboard", "url": "admin:index"},
-        {
-            "name": "GitHub",
-            "url": "https://github.com/harsh164",
-            "new_window": True,
-        },
+        {"name": "GitHub", "url": "https://github.com/harsh164", "new_window": True},
     ],
 
-    # Icons
     "icons": {
         "accounts.User": "fas fa-user-circle",
         "doctors.Doctor": "fas fa-user-md",
         "patients.Patient": "fas fa-hospital-user",
         "patients.PatientDoctor": "fas fa-notes-medical",
+        "auth.User": "fas fa-user",
+        "auth.Group": "fas fa-users",
     },
 
-    # Forms UI
-    "changeform_format": "horizontal_tabs",
-    "changeform_format_overrides": {
-        "accounts.user": "collapsible",
-    },
+    "show_sidebar": True,
+
+    "theme": "darkly",  # 🔥 IMPORTANT
 }
