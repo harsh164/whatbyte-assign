@@ -74,3 +74,51 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+JAZZMIN_SETTINGS = {
+    # --------------------
+    # Branding
+    # --------------------
+    "site_title": "Healthcare Admin",
+    "site_header": "Healthcare Management System",
+    "site_brand": "WhatByte",
+    "welcome_sign": "Welcome back 👋",
+
+    # --------------------
+    # Layout
+    # --------------------
+    "navigation_expanded": True,
+    "hide_apps": ["auth"],
+    "hide_models": ["auth.Group"],
+
+    # --------------------
+    # Top Menu
+    # --------------------
+    "topmenu_links": [
+        {"name": "Dashboard", "url": "admin:index"},
+        {"name": "GitHub", "url": "https://github.com/harsh164", "new_window": True},
+    ],
+
+    # --------------------
+    # Icons (IMPORTANT)
+    # --------------------
+    "icons": {
+        "accounts.User": "fas fa-user-circle",
+        "doctors.Doctor": "fas fa-user-md",
+        "patients.Patient": "fas fa-hospital-user",
+        "patients.PatientDoctor": "fas fa-notes-medical",
+        "auth.User": "fas fa-user",
+        "auth.Group": "fas fa-users",
+    },
+
+    # --------------------
+    # UI Tweaks
+    # --------------------
+    "changeform_format": "horizontal_tabs",
+    "changeform_format_overrides": {
+        "accounts.user": "collapsible",
+    },
+
+    "show_sidebar": True,
+}
+
