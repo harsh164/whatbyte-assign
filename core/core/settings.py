@@ -1,28 +1,24 @@
 from pathlib import Path
-import os
 from dotenv import load_dotenv
+import os
 import dj_database_url
 
 load_dotenv()
 
-# --------------------------------------------------
-# BASE
-# --------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# --------------------------------------------------
+# SECURITY
+# --------------------------------------------------
 SECRET_KEY = os.getenv("SECRET_KEY", "unsafe-secret-key")
-
-DEBUG = False   # ❗ MUST be False on Render
-
+DEBUG = True
 ALLOWED_HOSTS = ["*"]
-
 
 # --------------------------------------------------
 # APPLICATIONS
 # --------------------------------------------------
 INSTALLED_APPS = [
-    "jazzmin",  # 👈 MUST be first
-
+    "jazzmin",  # MUST be first
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -33,16 +29,11 @@ INSTALLED_APPS = [
     "rest_framework",
 
     "accounts",
-    "doctors",
     "patients",
+    "doctors",
 ]
 
-
-# --------------------------------------------------
-# AUTH
-# --------------------------------------------------
 AUTH_USER_MODEL = "accounts.User"
-
 
 # --------------------------------------------------
 # DATABASE
@@ -53,23 +44,12 @@ DATABASES = {
     )
 }
 
-
 # --------------------------------------------------
-# REST FRAMEWORK
-# --------------------------------------------------
-REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-    ),
-}
-
-
-# --------------------------------------------------
-# MIDDLEWARE (Whitenoise REQUIRED)
+# MIDDLEWARE
 # --------------------------------------------------
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # 👈 REQUIRED
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # REQUIRED
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -77,14 +57,11 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
 ]
 
-
 # --------------------------------------------------
 # URLS / WSGI
 # --------------------------------------------------
 ROOT_URLCONF = "core.urls"
-
 WSGI_APPLICATION = "core.wsgi.application"
-
 
 # --------------------------------------------------
 # TEMPLATES
@@ -92,7 +69,6 @@ WSGI_APPLICATION = "core.wsgi.application"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -105,50 +81,51 @@ TEMPLATES = [
     },
 ]
 
+# --------------------------------------------------
+# STATIC FILES (THIS IS THE FIX)
+# --------------------------------------------------
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = []
+
+STATICFILES_STORAGE = (
+    "whitenoise.storage.CompressedManifestStaticFilesStorage"
+)
 
 # --------------------------------------------------
-# INTERNATIONALIZATION
+# LANGUAGE / TIME
 # --------------------------------------------------
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-
-# --------------------------------------------------
-# STATIC FILES (CRITICAL FOR JAZZMIN)
-# --------------------------------------------------
-STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
-
-STATICFILES_STORAGE = (
-    "whitenoise.storage.CompressedManifestStaticFilesStorage"
-)
-
-
-# --------------------------------------------------
-# DEFAULTS
-# --------------------------------------------------
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# --------------------------------------------------
+# REST FRAMEWORK
+# --------------------------------------------------
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    )
+}
 
 # --------------------------------------------------
-# JAZZMIN CONFIGURATION
+# JAZZMIN UI SETTINGS
 # --------------------------------------------------
 JAZZMIN_SETTINGS = {
-
-    # Branding
     "site_title": "Healthcare Admin",
     "site_header": "Healthcare Management System",
     "site_brand": "WhatByte",
     "welcome_sign": "Welcome back 👋",
-    "copyright": "WhatByte",
 
-    # Layout
     "navigation_expanded": True,
     "show_sidebar": True,
 
-    # Top Menu
+    "hide_apps": ["auth"],
+    "hide_models": ["auth.Group"],
+
     "topmenu_links": [
         {"name": "Dashboard", "url": "admin:index"},
         {
@@ -158,18 +135,12 @@ JAZZMIN_SETTINGS = {
         },
     ],
 
-    # Icons
     "icons": {
         "accounts.User": "fas fa-user-circle",
         "doctors.Doctor": "fas fa-user-md",
         "patients.Patient": "fas fa-hospital-user",
         "patients.PatientDoctor": "fas fa-notes-medical",
-        "auth.Group": "fas fa-users",
     },
 
-    # UI Tweaks
     "changeform_format": "horizontal_tabs",
-    "changeform_format_overrides": {
-        "accounts.user": "collapsible",
-    },
 }
